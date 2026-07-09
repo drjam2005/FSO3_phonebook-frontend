@@ -40,7 +40,7 @@ const App = () => {
 				noteService.updateUser(personData.id, personData).then(response =>{
 					setPersons(persons.map(p => p.id === personData.id ?  personData : p));
 					updateNotification(`Updated ${response.name}`, false);
-				}).catch(response =>{
+				}).catch(response => {
 					updateNotification(`Information of ${personData.name} has already been removed from the server`, true);
 					setPersons(persons.filter(p => p.id !== personData.id));
 				})
