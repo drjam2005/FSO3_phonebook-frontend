@@ -49,11 +49,11 @@ const App = () => {
 			return;
 		}
 
-		const newPersonData = {name: newName, number: newNumber, id: persons.length+1};
+		const newPersonData = {name: newName, number: newNumber };
 		noteService.create(newPersonData).then(response => {
 			console.log("person created:", response);
 				updateNotification(`Added ${newPersonData.name}`, false);
-				setPersons(persons.concat( response));
+				setPersons(persons.concat(response));
 				setName('');
 				setNumber('');
 			}
@@ -74,14 +74,12 @@ const App = () => {
 		return () => {
 			const personName = persons.find(p => p.id === id).name
 			if(window.confirm(`Delete ${personName}?`)){
-				noteService.deleteData(id).then(response =>
+				noteService.deleteData(id).then(() =>
 				{
-					updateNotification(
-						`Deleted ${personName}`, false
-					)
+					updateNotification( `Deleted ${personName}`, false)
 					setPersons(
 						persons.filter(person => 
-							person.id !== response.id
+							person.id !== id
 						)
 					);
 				});
