@@ -5,8 +5,6 @@ import PersonForm from './components/PersonForm.jsx'
 import noteService from './service/notes.jsx'
 import Notification from './components/Notification.jsx'
 
-import axios from 'axios'
-
 const App = () => {
 	const [persons, setPersons] = useState([])
 	const [newName, setName] = useState('');
