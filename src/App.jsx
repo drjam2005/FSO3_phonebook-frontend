@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Persons from './components/Persons.jsx'
 import Filter from './components/Filter.jsx'
 import PersonForm from './components/PersonForm.jsx'
-import noteService from './service/notes.jsx'
+import personService from './service/persons.jsx'
 import Notification from './components/Notification.jsx'
 
 const App = () => {
@@ -19,7 +19,7 @@ const App = () => {
 
 	useEffect(() => {
 		console.log('promise');
-		noteService
+		personService
 			.getAll()
 			.then(response => {
 				setPersons(response);
@@ -35,7 +35,7 @@ const App = () => {
 			{
 				const personData = persons.find(p => p.name === newName);
 				personData.number = newNumber;
-				noteService.updateUser(personData.id, personData).then(response =>{
+				personService.updateUser(personData.id, personData).then(response =>{
 					setPersons(persons.map(p => p.id === personData.id ?  personData : p));
 					updateNotification(`Updated ${response.name}`, false);
 				}).catch(response => {
@@ -48,14 +48,18 @@ const App = () => {
 		}
 
 		const newPersonData = {name: newName, number: newNumber };
-		noteService.create(newPersonData).then(response => {
+		personService.create(newPersonData).then(response => {
 			console.log("person created:", response);
 				updateNotification(`Added ${newPersonData.name}`, false);
 				setPersons(persons.concat(response));
 				setName('');
 				setNumber('');
 			}
-		)
+		).catch(error => {
+			const log = error.response.data.error;
+			console.log(log);
+			updateNotification(log, true);
+		});
 	}
 
 	const updateNotification = (message, isError) => {
@@ -72,7 +76,7 @@ const App = () => {
 		return () => {
 			const personName = persons.find(p => p.id === id).name
 			if(window.confirm(`Delete ${personName}?`)){
-				noteService.deleteData(id).then(() =>
+				personService.deleteData(id).then(() =>
 				{
 					updateNotification( `Deleted ${personName}`, false)
 					setPersons(
